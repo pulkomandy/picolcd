@@ -104,7 +104,7 @@ static MyLcdDevice LcdDevices[MAX_LCD_DEVICES] = {
  		.write_interrupt = lcd_write_interrupt,
 		.set_backlight = lcd_set_backlight,
  		.set_lights = lcd_20x2_lights,
- 		.decode_ir = decode_rc5_20x4
+ 		.decode_ir = decode_rc5_20x4_new
 	},
 	{
 		.idVendor = MINI_BOX, 
@@ -121,7 +121,7 @@ static MyLcdDevice LcdDevices[MAX_LCD_DEVICES] = {
  		.write_interrupt = lcd_write_interrupt,
 		.set_backlight = lcd_set_backlight,
  		.set_lights = lcd_20x4_lights,
-		.decode_ir = decode_rc5_20x4
+		.decode_ir = decode_rc5_20x4_new
 	}
 	
 };

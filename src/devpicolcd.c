@@ -50,7 +50,7 @@ MyLcdDevice* picolcd_open (unsigned int whichDevice) {
   * @return  returns 0
  */
 int lcd_20x2_init(MyLcdDevice *lcdDevice) {
-	libusb_clear_halt(lcdDevice->lcdHandle, LIBUSB_ENDPOINT_IN + 1);
+	//libusb_clear_halt(lcdDevice->lcdHandle, LIBUSB_ENDPOINT_IN + 1);
 	/* Initialize your decode stuff here*/
 	IR20x4 *ir20x4;
 	lcdDevice->irStruct=(void*)malloc(sizeof(IR20x4));		
@@ -337,7 +337,7 @@ InputPacket* lcd_read_input(MyLcdDevice *lcdDevice) {
  * @return  returns address and command. address=(return >> 6)&0x1F. command=return&0x3F
  */
 short decode_rc5_20x2(unsigned char *irData,int len) {
-	return decode_rc5_20x4(irData,len);
+	return 0; //decode_rc5_20x4_new(irData,len);
 }
 
 
@@ -349,7 +349,7 @@ short decode_rc5_20x2(unsigned char *irData,int len) {
  * @param len Length of the received IR data
  * @return  returns a short int. The binary format is 00<start-2-bits>0<address-5-bits><command-6-bits>
  */
-short decode_rc5_20x4(MyLcdDevice *lcdDevice,unsigned char *irData,int len) {
+short decode_rc5_20x4_new(MyLcdDevice *lcdDevice,unsigned char *irData,int len) {
 	int i;
 	short data;
 	IR20x4 *ir20x4=(IR20x4*)lcdDevice->irStruct;
