@@ -32,8 +32,8 @@ int main(int argc, char* argv[])
 	get_system_info(&info);
 
 	cpu_info cpus[info.cpu_count];
-	int t[info.cpu_count];
-	get_cpu_info(0, info.cpu_count, &cpus);
+	bigtime_t t[info.cpu_count];
+	get_cpu_info(0, info.cpu_count, &cpus[0]);
 
 	for(;;)
 	{
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 
 		usleep(40000);
 
-		get_cpu_info(0, info.cpu_count, &cpus);
+		get_cpu_info(0, info.cpu_count, &cpus[0]);
 
 		char str[21];
 		memset(str, 8, 20);
@@ -53,6 +53,7 @@ int main(int argc, char* argv[])
 		int line = 0;
 		for (i = 0; i < info.cpu_count; i++) {
 			int load = (cpus[i].active_time - t[i]) / 2000;
+			//printf("%d: %lld %lld %d   ", i, cpus[i].active_time, t[i], load);
 
 			for (j = 0; j < 20; j++) {
 				if (j < load)
@@ -68,6 +69,8 @@ int main(int argc, char* argv[])
 				memset(str, 8, 20);
 			}
 		}
+
+		//puts("");
 
 		// Display any leftover partial line
 		if (shift != 0)
