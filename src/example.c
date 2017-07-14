@@ -10,9 +10,14 @@
 #include <OS.h>
 
 
-int main(int argc, char* argv[])
+MyLcdDevice* reset()
 {
-	MyLcdDevice* dev = picolcd_open(PICOLCD_20x2);
+	MyLcdDevice* dev;
+	do {
+		dev = picolcd_open(PICOLCD_20x2);
+		if (dev == NULL)
+			usleep(1000000);
+	} while(dev == NULL);
 	dev->init_lcd(dev);
 	dev->clear(dev);
 
@@ -26,6 +31,13 @@ int main(int argc, char* argv[])
 	dev->set_char(dev, 5, "\x1F\x1F\x00\x00\x00\x00\x1F\x1F");
 	dev->set_char(dev, 6, "\x00\x00\x00\x1F\x1F\x00\x1F\x1F");
 	dev->set_char(dev, 7, "\x1F\x1F\x00\x1F\x1F\x00\x1F\x1F");
+	return dev;
+}
+
+
+int main(int argc, char* argv[])
+{
+	MyLcdDevice* dev = reset();
 
 	// To know CPU count
 	system_info info;
@@ -64,7 +76,8 @@ int main(int argc, char* argv[])
 
 			shift++;
 			if (shift >= 3) {
-				dev->display(dev, line++, 0, str);
+				if (dev->display(dev, line++, 0, str) == 0)
+					dev = reset();
 				shift = 0;
 				memset(str, 8, 20);
 			}
@@ -74,6 +87,7 @@ int main(int argc, char* argv[])
 
 		// Display any leftover partial line
 		if (shift != 0)
-			dev->display(dev, line++, 0, str);
+			if (dev->display(dev, line++, 0, str) == 0)
+				dev = reset();
 	}
 }

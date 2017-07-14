@@ -19,7 +19,8 @@
  * @return An initialized MyLcdDevice on success. NULL on failure
  */
 MyLcdDevice* picolcd_open (unsigned int whichDevice) {
-	libusb_context *ctx;
+	static libusb_context *ctx = NULL;
+
 	MyLcdDevice *myLcdDevice;
 	switch (whichDevice) {
 		case PICOLCD_20x2:
@@ -29,12 +30,17 @@ MyLcdDevice* picolcd_open (unsigned int whichDevice) {
 			myLcdDevice = &LcdDevices[1];
 			break;			
 	}
-	printf("libusb_init %d\n",libusb_init(&ctx));
-	libusb_set_debug(ctx,3);
+
+	if (ctx == NULL) {
+		printf("libusb_init %d\n",libusb_init(&ctx));
+		libusb_set_debug(ctx,3);
+	}
 	/*	libusb_open(myLcdDevice->lcdDevice, &myLcdDevice->lcdHandle);*/
 	myLcdDevice->lcdHandle = libusb_open_device_with_vid_pid (ctx, MINI_BOX, whichDevice);
-	if (!myLcdDevice->lcdHandle)
+	if (!myLcdDevice->lcdHandle) {
+		puts("dev open failed");
 		return NULL;
+	}
 
 	myLcdDevice->lcdDevice =  libusb_get_device (myLcdDevice->lcdHandle);
  	libusb_detach_kernel_driver(myLcdDevice->lcdHandle,0);
